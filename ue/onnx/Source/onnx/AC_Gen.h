@@ -33,10 +33,11 @@ public:
 		TArray<AA_Object*> objPool;
 
 	UPROPERTY(EditAnywhere)
-	int objPoolSize;
+		int objPoolSize;
 
 	AA_Object* GenObject(int idx, FVector pose);
 	AA_Object* Create();
-	void Add(AA_Object* obj);
-	void SetActive(AA_Object* obj, bool isActive);
+	void AddtoPool(AA_Object* obj);
+	void SetObjActive(AA_Object* obj, bool isActive);
+	AA_Object* SearchObj(int idx);
 };

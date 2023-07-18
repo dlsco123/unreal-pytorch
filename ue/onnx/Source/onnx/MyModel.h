@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Actor.h"
 #include "MyModel.generated.h"
 
@@ -26,12 +27,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	class UNeuralNetwork* myModel;// 에디터에서 직접 넣어주기
+		class UNeuralNetwork* myModel;// 에디터에서 직접 넣어주기
 	UPROPERTY(EditAnywhere)
-	class UMyNeuralNetwork* myNetwork; 
+		class UMyNeuralNetwork* myNetwork; 
 	
 	// AC
 	class UAC_Gen* objGenerator; //에디터에서 직접 넣어주기
+
+	// Setting
+	UPROPERTY(EditAnywhere, Category="Settings")
+		float zPose = 50;
 
 	// Data
 	UPROPERTY(EditAnywhere)

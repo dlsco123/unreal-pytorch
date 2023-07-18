@@ -12,7 +12,10 @@ public class onnx : ModuleRules
 
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput","OpenCV",
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore","UMG", "HeadMountedDisplay", "EnhancedInput","OpenCV",
             "OpenCVHelper","NeuralNetworkInference", "MediaAssets" });
+
+        // Uncomment if you are using Slate UI
+        //PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
     }
 }

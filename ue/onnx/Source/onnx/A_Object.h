@@ -23,6 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PingPongBall)
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+		class USphereComponent* collision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UStaticMeshComponent* meshComp;
+	UPROPERTY(VisibleAnywhere)
+		int idx;
 };

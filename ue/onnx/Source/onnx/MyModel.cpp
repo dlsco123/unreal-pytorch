@@ -14,6 +14,8 @@
 #include "PostOpenCVHeaders.h"
 #include <vector>
 
+#include "Engine/Texture2D.h"
+
 #include "MyModel.h"
 
 using namespace std;
@@ -25,6 +27,7 @@ AMyModel::AMyModel()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	objGenerator = CreateDefaultSubobject<UAC_Gen>(TEXT("ObjectPool"));
 }
 
 // Called when the game starts or when spawned
@@ -55,13 +58,21 @@ void AMyModel::SetModel(UNeuralNetwork* model)
 void AMyModel::RunModel()
 {
 	//이미지를 얻는다
-	GetImage();
+	//GetImage();
 	TArray<float> imgArray = TextureToArray(image_test);
 
 	myNetwork->URunModel(imgArray, result_arr);
 
 	// 오브젝트를 생성한다.
+	int num_object = result_arr.Num() / 2;
 	
+	for (int i = 0; i < num_object; i++)
+	{
+		FVector pose = FVector(result_arr[i * num_object], result_arr[i * num_object + 1], zPose);
+		objGenerator->GenObject(i, pose);
+	}
+	
+	// 오브젝트 다시 회수
 }
 
 TArray<float> AMyModel::TextureToArray(UTexture2D* image) // 파라미터 의미 없음. 기존 이미지 바로 로드해서 사용하는 방법
@@ -69,7 +80,7 @@ TArray<float> AMyModel::TextureToArray(UTexture2D* image) // 파라미터 의미 없음.
 	TArray<float> result;
 	
 	FString contentDirectory = FPaths::ProjectContentDir();
-	FString relativeImagePath = FPaths::Combine(contentDirectory, TEXT("Data/images.jpg"));
+	FString relativeImagePath = FPaths::Combine(contentDirectory, TEXT("Data/image.png"));
 	std::string imagePath(TCHAR_TO_UTF8(*relativeImagePath));
 
 	cv::Mat Img = cv::imread(imagePath, cv::IMREAD_COLOR);  // 이미지 파일을 cv::Mat 형태로 불러옵니다.

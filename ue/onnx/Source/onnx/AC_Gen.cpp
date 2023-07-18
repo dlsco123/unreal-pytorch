@@ -1,15 +1,10 @@
-//#include "A_Object.h"
-
 #include "AC_Gen.h"
 
-// Sets default values for this component's properties
 UAC_Gen::UAC_Gen()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
+
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -23,10 +18,11 @@ void UAC_Gen::BeginPlay()
 		for (int i = 0; i < objPoolSize; i++)
 		{
 			AA_Object* obj = Cast<AA_Object>(Create());
-
+		
 			if (obj)
 			{
-				Add(obj);
+				obj->idx = i;
+				AddtoPool(obj);
 			}
 		}
 	}
@@ -34,12 +30,10 @@ void UAC_Gen::BeginPlay()
 }
 
 
-// Called every frame
 void UAC_Gen::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 AA_Object* UAC_Gen::GenObject(int idx, FVector pose)
@@ -50,11 +44,17 @@ AA_Object* UAC_Gen::GenObject(int idx, FVector pose)
 		return nullptr;
 
 	}
-	AA_Object* obj = objPool.Pop();
+	//AA_Object* obj = objPool.Pop();
+	AA_Object* obj = SearchObj(idx);
 
-	//위치로 이동
+	if (obj)
+	{
+		//위치로 이동
+		obj->SetActorLocation(pose);
 
-	SetActive(obj, true);
+		SetActive(obj, true);
+	}
+
 	return obj;
 }
 
@@ -67,22 +67,39 @@ AA_Object* UAC_Gen::Create()
 
 	if (obj)
 	{
-		Add(obj);
+		AddtoPool(obj);
 	}
 
 	return nullptr;
 }
 
-void UAC_Gen::Add(AA_Object* obj)
+void UAC_Gen::AddtoPool(AA_Object* obj)
 {
 	objPool.AddUnique(Cast<AA_Object>(obj));
 
-	SetActive(obj, false);
+	SetObjActive(obj, false);
 }
 
-void UAC_Gen::SetActive(AA_Object* obj, bool isActive)
+void UAC_Gen::SetObjActive(AA_Object* obj, bool isActive)
 {
 	obj->SetActorHiddenInGame(!isActive);
 	obj->SetActorEnableCollision(isActive);
 	obj->SetActorTickEnabled(isActive);
+}
+
+AA_Object* UAC_Gen::SearchObj(int idx)
+{
+	AA_Object* output;
+	for (int i = 0; i < objPool.Num(); i++)
+	{
+		if (objPool[i]->idx == idx)
+		{
+			output = objPool[i];
+			objPool.RemoveAt(i);
+			return output;
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%d is already used.", idx));
+	return nullptr;
 }
