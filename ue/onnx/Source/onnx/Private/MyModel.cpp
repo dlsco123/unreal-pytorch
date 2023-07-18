@@ -48,6 +48,8 @@ void AMyModel::Tick(float DeltaTime)
 
 void AMyModel::SetModel(UNeuralNetwork* model)
 {
+	UE_LOG(LogTemp, Warning, TEXT("SetModel _ Start"));
+
 	model->AddToRoot();
 
 	myNetwork = NewObject<UMyNeuralNetwork>();
@@ -57,9 +59,19 @@ void AMyModel::SetModel(UNeuralNetwork* model)
 
 void AMyModel::RunModel()
 {
+	UE_LOG(LogTemp, Warning, TEXT("RunModel _ Start"));
+
 	//이미지를 얻는다
 	//GetImage();
 	TArray<float> imgArray = TextureToArray(image_test);
+
+	if (imgArray.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("imgArray Changing failed"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("RunModel _ imgArray : %f, len : %d"), imgArray[0], imgArray.Num());
 
 	myNetwork->URunModel(imgArray, result_arr);
 
@@ -85,16 +97,36 @@ TArray<float> AMyModel::TextureToArray(UTexture2D* image) // 파라미터 의미 없음.
 
 	cv::Mat Img = cv::imread(imagePath, cv::IMREAD_COLOR);  // 이미지 파일을 cv::Mat 형태로 불러옵니다.
 
-	result.Reserve(Img.rows * Img.cols * Img.channels());
-
-	for (int i = 0; i < Img.rows; ++i)
+	if (Img.empty())
 	{
-		for (int j = 0; j < Img.cols; ++j)
+		UE_LOG(LogTemp, Warning, TEXT("Failed to load image at %s"), *relativeImagePath);
+		return result;
+	}
+
+	cv::Vec3b firstPixel = Img.at<cv::Vec3b>(0, 0);
+	UE_LOG(LogTemp, Warning, TEXT("First pixel BGR: %d, %d, %d"), firstPixel[0], firstPixel[1], firstPixel[2]);
+
+	// YOLOv5의 입력 이미지 사이즈에 맞게 이미지를 리사이즈
+	cv::Mat resizedImg;
+	cv::resize(Img, resizedImg, cv::Size(640, 640));  // 여기서는 예시로 640x640으로 설정했습니다.
+
+	result.Reserve(resizedImg.rows * resizedImg.cols * resizedImg.channels());
+
+	for (int i = 0; i < resizedImg.rows; ++i)
+	{
+		for (int j = 0; j < resizedImg.cols; ++j)
 		{
-			cv::Vec3b Pixel = Img.at<cv::Vec3b>(i, j);  // BGR format으로 읽어옵니다.
+			cv::Vec3b Pixel = resizedImg.at<cv::Vec3b>(i, j);  // BGR format으로 읽어옵니다.
 			result.Add(Pixel[2] / 255.0f);  // R
 			result.Add(Pixel[1] / 255.0f);  // G
 			result.Add(Pixel[0] / 255.0f);  // B
+
+			// Add logs to check values
+			if (i == 0 && j == 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("First pixel RGB in array: %f, %f, %f"),
+					result[result.Num() - 3], result[result.Num() - 2], result[result.Num() - 1]);
+			}
 		}
 	}
 

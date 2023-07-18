@@ -33,7 +33,7 @@ public:
 		TArray<AA_Object*> objPool;
 
 	UPROPERTY(EditAnywhere)
-		int objPoolSize;
+		int objPoolSize = 20;
 
 	AA_Object* GenObject(int idx, FVector pose);
 	AA_Object* Create();

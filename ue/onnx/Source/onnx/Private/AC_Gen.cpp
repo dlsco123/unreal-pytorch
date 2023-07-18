@@ -26,9 +26,7 @@ void UAC_Gen::BeginPlay()
 			}
 		}
 	}
-	
 }
-
 
 void UAC_Gen::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -52,7 +50,7 @@ AA_Object* UAC_Gen::GenObject(int idx, FVector pose)
 		//위치로 이동
 		obj->SetActorLocation(pose);
 
-		SetActive(obj, true);
+		SetObjActive(obj, true);
 	}
 
 	return obj;
@@ -100,6 +98,6 @@ AA_Object* UAC_Gen::SearchObj(int idx)
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%d is already used.", idx));
+	UE_LOG(LogTemp, Warning, TEXT("%d is already used."), idx);
 	return nullptr;
 }

@@ -32,7 +32,8 @@ public:
 		class UMyNeuralNetwork* myNetwork; 
 	
 	// AC
-	class UAC_Gen* objGenerator; //에디터에서 직접 넣어주기
+	UPROPERTY(EditAnywhere)
+		class UAC_Gen* objGenerator; //에디터에서 직접 넣어주기
 
 	// Setting
 	UPROPERTY(EditAnywhere, Category="Settings")
