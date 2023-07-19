@@ -81,16 +81,21 @@ void UMyNeuralNetwork::URunModel(TArray<float>& image, TArray<float>& results)
 		int label = SearchMax(labels);
 		//int label = int( OutputTensor[i * channelStride + 5] );
 		float coff = OutputTensor[i * channelStride + 5];
-		UE_LOG(LogTemp, Warning, TEXT("%d -> label :  %d, coff : %f"), num_Detection, label, coff);
+		UE_LOG(LogTemp, Warning, TEXT("%d -> label :  %d, coff : %f"), i, label, coff);
 
 		if ( coff >= 0.85 && label == 0)
 		{
-			FVector center = FindCenter(OutputTensor[i* channelStride], OutputTensor[i * channelStride +1], OutputTensor[i * channelStride +2], OutputTensor[i * channelStride +3]);
+			// 결과가 두 점 인경우
+			//FVector center = FindCenter(OutputTensor[i* channelStride], OutputTensor[i * channelStride +1], OutputTensor[i * channelStride +2], OutputTensor[i * channelStride +3]);
 
-			results.Add(center.X);							// center X
-			results.Add(center.Y);							// center y
+			// 결과가 센터 한 점에 길이 인 경우
+			float cen_x = OutputTensor[i * channelStride];
+			float cen_y = OutputTensor[i * channelStride + 1];
 
-			UE_LOG(LogTemp, Warning, TEXT("Center: %f, %f"), center.X, center.Y);
+			results.Add(cen_x);							// center X
+			results.Add(cen_y);							// center y
+
+			UE_LOG(LogTemp, Warning, TEXT("Center: %f, %f"), cen_x, cen_y);
 		}
 	}
 

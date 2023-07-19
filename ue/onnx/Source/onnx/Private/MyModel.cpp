@@ -75,7 +75,7 @@ void AMyModel::RunModel()
 
 	UE_LOG(LogTemp, Warning, TEXT("RunModel _ imgArray : %f, len : %d"), imgArray[0], imgArray.Num());
 
-	// 모델 예측
+	// 모델 예측 - 인풋 데이터, 아웃풋 데이터
 	myNetwork->URunModel(imgArray, result_arr);
 
 	// 오브젝트를 생성한다.
