@@ -61,8 +61,10 @@ void AMyModel::RunModel()
 {
 	UE_LOG(LogTemp, Warning, TEXT("RunModel _ Start"));
 
-	//이미지를 얻는다
-	//GetImage();
+	// 이미지를 얻는다
+	// GetImage();
+
+	// 이미지 데이터 전처리 (1차원 배열 형태로 정리. /255) 
 	TArray<float> imgArray = TextureToArray(image_test);
 
 	if (imgArray.IsEmpty())
@@ -73,6 +75,7 @@ void AMyModel::RunModel()
 
 	UE_LOG(LogTemp, Warning, TEXT("RunModel _ imgArray : %f, len : %d"), imgArray[0], imgArray.Num());
 
+	// 모델 예측
 	myNetwork->URunModel(imgArray, result_arr);
 
 	// 오브젝트를 생성한다.
@@ -103,7 +106,9 @@ TArray<float> AMyModel::TextureToArray(UTexture2D* image) // 파라미터 의미 없음.
 		return result;
 	}
 
+
 	cv::Vec3b firstPixel = Img.at<cv::Vec3b>(0, 0);
+
 	UE_LOG(LogTemp, Warning, TEXT("First pixel BGR: %d, %d, %d"), firstPixel[0], firstPixel[1], firstPixel[2]);
 
 	// YOLOv5의 입력 이미지 사이즈에 맞게 이미지를 리사이즈

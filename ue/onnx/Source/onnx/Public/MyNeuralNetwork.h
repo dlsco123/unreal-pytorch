@@ -26,4 +26,6 @@ public:
 	void URunModel(TArray<float>& image, TArray<float>& results);
 	FVector FindCenter(float x1, float y1, float x2, float y2);
 
+	int SearchMax(TArray<float> arr);
+
 };
