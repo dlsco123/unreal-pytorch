@@ -14,6 +14,9 @@
 #include "PostOpenCVHeaders.h"
 #include <vector>
 
+//Image save for debug
+#include "ImageUtils.h"
+
 #include "Engine/Texture2D.h"
 
 #include "MyModel.h"
@@ -44,6 +47,23 @@ void AMyModel::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	RunModel();
+}
+
+void AMyModel::SaveFloatArrayAsPNG(const TArray<float>& imageData, int32 width, int32 height, const FString& filePath)
+{
+	TArray<FColor> imageColors;
+	imageColors.Reserve(640 * 640);
+
+	// TArray<float>를 TArray<FColor>로 변환
+	for (float Value : imageData)
+	{
+		// 여기에서 float 값을 0~1 범위에서 0~255 범위로 변환합니다.
+		uint8 clampedValue = FMath::Clamp(Value * 255.0f, 0.0f, 255.0f);
+		imageColors.Add(FColor(clampedValue, clampedValue, clampedValue));
+	}
+
+	// TArray<FColor>를 이미지로 저장
+	FImageUtils::CompressImageArray(width, height, imageColors, filePath);
 }
 
 void AMyModel::SetModel(UNeuralNetwork* model)
@@ -106,7 +126,7 @@ TArray<float> AMyModel::TextureToArray(UTexture2D* image) // 파라미터 의미 없음.
 		return result;
 	}
 
-
+	
 	cv::Vec3b firstPixel = Img.at<cv::Vec3b>(0, 0);
 
 	UE_LOG(LogTemp, Warning, TEXT("First pixel BGR: %d, %d, %d"), firstPixel[0], firstPixel[1], firstPixel[2]);

@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<float> result_arr;
 
+	// Debug
+	void AMyModel::SaveFloatArrayAsPNG(const TArray<float>& imageData, int32 width, int32 height, const FString& filePath);
+
 	void SetModel(UNeuralNetwork* model);
 	void RunModel();
 

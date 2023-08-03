@@ -71,7 +71,7 @@ void UMyNeuralNetwork::URunModel(TArray<float>& image, TArray<float>& results)
 		//UE_LOG(LogTemp, Warning, TEXT("Label : %d"), OutputTensor[i * channelStride + 5]);
 		
 		TArray<float> labels;
-		// label 부분만 따로 추출 5 ~ 74
+		// label 부분만 따로 추출 5 ~ 84
 		for (int j = 5; j < 85; j++)
 		{
 			labels.Add(OutputTensor[i * channelStride + j]);
